@@ -1,0 +1,269 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("bnbIndia_project_PRISMA_URL")
+  directUrl = env("bnbIndia_project_URL_NON_POOLING")
+}
+
+model Amenities {
+  amenity_id    String @id @default(cuid())
+  amenity_name  String
+  amenity_image String
+  // listings     Listing[]
+}
+
+model Category {
+  category_id    String @id @default(cuid())
+  category_name  String
+  category_image String
+  category_code  String @default("")
+  // listings     Listing[]
+}
+
+model Listing {
+  listing_id String @id @default(cuid())
+  host_id    String
+
+  // Location
+  address   String
+  city      String
+  area_name String
+  state     String
+  latitude  String
+  longitude String
+  zipCode   Int
+
+  numberOfBedrooms  Int
+  numberOfBathrooms Int
+  numberOfBeds      Int
+
+  villaType String @default("")
+  Amenities String @default("")
+
+  // Pricing
+  pricePerDay Float
+
+  title       String
+  description String
+  isListed    Boolean
+
+  maxGuests     Int
+  minGuests     Int @default(1)
+  pricePerGuest Int @default(1000)
+
+  bookingType String
+  cancellationType String @default("FLEXIBLE") // FIRM = 30 days, FLEXIBLE = 15 days, Relaxed = 7 days
+  family_only Boolean
+  bnbVerified Boolean
+  category    String?
+
+  coverImage     String           @default("")
+  VillaImages    VillaImages[]
+  HotelPriceData HotelPriceData[] // Added relation for overridden prices
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model Booking {
+  id           String   @id @default(cuid())
+  userId       String
+  propertyId   String
+  ownerId      String   @default("")
+  checkinDate  DateTime
+  checkoutDate DateTime
+  adults       Int
+  children     Int
+  pets         Int
+  totalPrice   Float
+  serviceFee   Float   @default(0)
+  status       String // e.g., 'pending', 'confirmed', 'cancelled'
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactionID String @default("NA")
+}
+
+model transactionDetails {
+  // id             String @id @default(cuid())
+  booking_id String
+  payment_id String @id
+  order_id   String
+  signature  String
+
+  payment_status String // e.g., 'pending', 'confirmed', 'refundProcessing', 'refunded'
+  payment_amount Float
+  // payemnt mode to be added here
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model VillaImages {
+  villaImage_uid String   @id @default(cuid())
+  villa_id       String
+  image_url      String   @default("")
+  type           String
+  topImage       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  Listing Listing @relation(fields: [villa_id], references: [listing_id])
+}
+
+model HotelPriceData {
+  id             String   @id @default(cuid())
+  villa_id       String
+  date           DateTime
+  pricingDetails Json
+  blockNight     Boolean  @default(false)
+
+  // Relationships
+  listing Listing @relation(fields: [villa_id], references: [listing_id])
+
+  @@unique([villa_id, date])
+}
+
+model tredingVillas {
+  tredingVillas_id String @id @default(cuid())
+  villa_id         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model luxuryVillas {
+  luxuryVillas_id String @id @default(cuid())
+  villa_id        String
+  description     String @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model userWishlist {
+  userWishlist_id Int    @id @default(autoincrement())
+  villa_id        String
+  user_id         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model villaReviews {
+  villareviews_id String @id @default(cuid())
+  villaId         String
+  bookingId       String
+  user_id         String
+  star_1          Int
+  star_2          Int
+  star_3          Int
+  review_1        String
+  review_2        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model userReviews {
+  userreviews_id String @id @default(cuid())
+  user_id        String
+  star_1         Int
+  star_2         Int
+  star_3         Int
+  review_1       String
+  review_2       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model hostReviews {
+  hostreviews_id String @id @default(cuid())
+  user_id        String
+  host_id        String
+  star_1         Int
+  star_2         Int
+  star_3         Int
+  review_1       String
+  review_2       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model reviewsTotal {
+  reviews_total_id   String @id @default(cuid())
+  review_total       Float
+  review_count       Int
+  pointer_table_id   String
+  pointer_table_name String
+}
+
+model users {
+  user_id       String   @id
+  first_name    String?
+  last_name     String?
+  email_id      String   @unique
+  phone_number  String?
+  profile_image String?
+  created_time  DateTime @default(now())
+  updated_time  DateTime @updatedAt
+
+  isHost      Boolean   @default(false)
+  dob         DateTime? @default(dbgenerated())
+  gender      String?   @default("not specified")
+  description String?   @default("not specified")
+  language    Json?     @default("[]")
+
+  address   String? // Nullable by making it optional
+  city      String? // Nullable by making it optional
+  area_name String? // Nullable by making it optional
+  state     String? // Nullable by making it optional
+  zipCode   String? // Nullable by making it optional
+
+  hostpanel hostpanel?
+}
+
+model hostpanel {
+  user_id String @id
+  user    users  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  bank_account_number String
+  ifsc_code           String
+  pan_number          String
+  account_holder_name String
+  account_type        String @default("savings") // Can be "savings" or "current"
+  gst_number          String @default("")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Blog {
+  id         String   @id @default(uuid())
+  title      String
+  content    String
+  imageUrl   String? // Optional image URL
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  authorId   String
+  authorName String
+  Tags       String[]
+  qa         Json
+
+  @@index([title])
+}
+
+model influencersReview {
+  influencersreviews_id String @id @default(cuid())
+  reviews_id            String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

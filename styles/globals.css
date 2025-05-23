@@ -1,0 +1,287 @@
+@import "react-quill/dist/quill.snow.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+  .horizontal-slider {
+    width: 100%;
+    height: 10px;
+    margin: 20px 0;
+  }
+  
+  .track {
+    background: #ddd;
+    border-radius: 5px;
+  }
+  
+  .track-0 {
+    background: #4CAF50; /* Color for the filled portion */
+  }
+  
+  .track-1 {
+    background: #ddd; /* Color for the unfilled portion */
+  }
+  
+  .thumb {
+    height: 20px;
+    width: 20px;
+    background-color: #4CAF50; /* Color for the thumbs */
+    border-radius: 50%;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 10px; /* width of the entire scrollbar */
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: rgb(241, 241, 241); /* color of the tracking area */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: rgb(234, 234, 234); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 1px solid rgba(182, 182, 182, 0.358); /* creates padding around scroll thumb */
+}
+
+.display-no-scroll::-webkit-scrollbar {
+  display: none;
+}
+.ql-editor {
+  min-height: 50vh;
+}
+
+@layer utilities {
+  .brown-gradient {
+    background-image: linear-gradient(
+      rgba(44, 35, 41, 0.8),
+      rgba(59, 67, 55, 0.5)
+    );
+  }
+
+  .red-gradient {
+    background: rgba(161, 23, 23, 1);
+    background: linear-gradient(205deg, #f9006a 0%, #ff0471 100%);
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+.prose ol,
+.prose ul {
+  padding-left: 2em; /* Adjust this value as needed */
+}
+
+.prose ol > li,
+.prose ul > li {
+  margin-left: 1em; /* Adjust this value as needed */
+}
+
+.prose ol,
+.prose ul {
+  padding-left: 2em; /* Adjust this value as needed */
+}
+
+.prose ol > li,
+.prose ul > li {
+  margin-left: 1em; /* Adjust this value as needed */
+}
+.prose img {
+  display: block; /* Ensure images are block-level elements */
+  margin: 0 auto;
+  width: 90%; /* Center align the image */
+}
+.bb {
+  border: 1px solid red;
+}
+
+.step-enter {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.step-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 300ms,
+    transform 300ms;
+}
+
+.step-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.step-exit-active {
+  opacity: 0;
+  transform: translateX(50px);
+  transition:
+    opacity 300ms,
+    transform 300ms;
+}
+
+.truncated-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* Limit to 5 lines for WebKit-based browsers */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5; /* Adjust line height if needed */
+  max-width: 100%; /* Ensure it respects container width */
+
+  display: -ms-flexbox; /* For old IE (Edge) compatibility */
+  display: flex; 
+  /* Standard flexbox display, needed for non-WebKit browsers */
+  flex-direction: column;
+  -ms-line-clamp: 5; /* IE fallback */
+  line-clamp: 5; /* Standard for browsers supporting line-clamp */
+}
+
+
+/* Custom styles for the carousel */
+.carousel-wrapper {
+  @apply relative overflow-hidden;
+}
+
+.carousel-track {
+  @apply flex transition-transform duration-300 ease-in-out;
+}
+
+.glass-morphism {
+  background: hsla(0, 0%, 100%, 0.185);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Semi-transparent border */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: to enhance the glass effect */
+  border-radius: 12px; /* Optional: to add rounded corners */
+}
+
+.black-gradient {
+  background: rgb(23, 22, 23);
+  background: linear-gradient(
+    2deg,
+    rgba(23, 22, 23, 1) 0%,
+    rgba(23, 22, 23, 0.891281512605042) 20%,
+    rgba(23, 22, 23, 0.8688725490196079) 37%,
+    rgba(121, 112, 255, 0) 100%
+  );
+}
+
+@media (max-width: 768px) {
+  .custom-date-range {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .rdrCalendarWrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .rdrMonth {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+
+  .rdrMonthsVertical {
+    flex-direction: column; /* Stack months vertically on small screens */
+    align-items: center; /* Center align the months */
+  }
+
+  /* Adjust font sizes for better readability on small screens */
+  .rdrMonthName,
+  .rdrWeekDay,
+  .rdrDayNumber {
+    font-size: 12px !important;
+  }
+
+  /* Reduce padding for a more compact layout */
+  .rdrMonth {
+    padding: 8px !important;
+  }
+}

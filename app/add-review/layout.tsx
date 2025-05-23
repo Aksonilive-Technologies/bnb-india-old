@@ -1,0 +1,32 @@
+
+import type { Metadata } from "next";
+import Navbar from "@/components/shared/navbar/generalNavbar";
+import "@/styles/globals.css";
+import Footer from "@/components/shared/footer";
+
+
+
+export const metadata: Metadata = {
+    title: {
+        default: 'Add Review',
+        template: `%s | Add Review`,
+    },
+    //   description: siteConfig.description,
+    //   keywords: siteConfig.keywords,
+    //   metadataBase: siteConfig.metadataBase,
+};
+
+export default function Layout({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
+    return (
+        <div className="">
+            <Navbar />
+            {children}
+            <Footer />
+        </div>
+
+    );
+}

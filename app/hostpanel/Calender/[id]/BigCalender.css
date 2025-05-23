@@ -1,0 +1,72 @@
+.calendar-cont {
+  width: 75vw;
+}
+
+.bg-gray {
+  background-color: #c2c2c248; /* Lighter gray for a softer look */
+}
+
+.calendar-todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.calendar-todo-list li {
+  /* background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  padding: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 0.875rem;
+  color: #333;
+  display: flex;
+  justify-content: space-between; */
+  margin-top: 20px;
+}
+
+/* .calendar-todo-list li:hover {
+  background: #f9f9f9;
+} */
+
+.rs-calendar-table-cell {
+  /* padding: 10px; */
+  transition: background-color 0.3s ease;
+}
+
+.rs-calendar-table-cell:hover {
+  background-color: #e6f7ff;
+  margin: 2px; /* Light blue on hover */
+}
+
+.rs-calendar-table-cell-selected {
+  background-color: #bae7ff !important; /* Blue for selected cells */
+  border-radius: 10px;
+}
+
+.rs-calendar-table-cell-today {
+  border: 1px solid #1890ff; /* Highlight today's date */
+  border-radius: 10px;
+}
+.rs-calendar-panel:not(.rs-calendar-compact)
+  .rs-calendar-table-row:not(.rs-calendar-table-header-row)
+  .rs-calendar-table-cell-content {
+  border-radius: 10px;
+}
+
+.other-month {
+  display: none;
+}
+
+.cell-boundary {
+  border: 1px solid #d3d3d3;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 1px;
+}
+
+.blocked-cell {
+  background-color: red;
+  color: white;
+}
