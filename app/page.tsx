@@ -214,7 +214,7 @@ const ListingPage = () => {
       </div>
 
       <div className="flex flex-col items-center justify-center w-full flex-grow md:mt-36 relative">
-        <div className="w-full h-[80vh] mt-[17vh] md:mt-[3vh]">
+        <div className="w-full mt-[17vh] md:mt-[3vh] mb-12">
           {isDataLoading ? (
             // <div className="w-full h-[100vh] flex flex-col justify-center items-center text-center">
             //   <p>loading....</p>

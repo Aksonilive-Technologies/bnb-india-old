@@ -10,7 +10,7 @@ import { LayoutDashboard } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import { MdOutlineImageNotSupported } from "react-icons/md";
 
-import Footer from "@/components/shared/footer";
+
 import ClientElementCaller from "@/components/shared/map/clientElementCaller";
 import Navbar from "@/components/shared/navbar/generalNavbar";
 import ReadMoreComponet from "@/components/shared/readMoreComponent";
@@ -315,7 +315,7 @@ export default async function detailsPage({ params, searchParams }: any) {
           </div>
         </div>
       </div>
-      <Footer />
+      
     </>
   );
 }

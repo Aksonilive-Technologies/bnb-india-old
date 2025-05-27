@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/shared/navbar/blogsNavBar";
-import Footer from "@/components/shared/footer";
+
 import BottomNavBar from "@/components/shared/navbar/generalBottomNavBar";
 
 import "@/styles/globals.css";
@@ -29,7 +29,7 @@ export default function HostPageLayout({
       <Navbar />
         {children}
         <BottomNavBar/>
-       <Footer/>
+       
     </>
       
   );

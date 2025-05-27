@@ -1,6 +1,6 @@
 import { Nunito } from "next/font/google";
-
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/shared/footer";
 
 import "@/styles/globals.css";
 
@@ -13,10 +13,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${global_font.className}`}>
+      <body className={`${global_font.className} flex flex-col min-h-screen`}>
         <Toaster />
         <>
-          <div>{children}</div>
+          <div className="flex-grow">{children}</div>
+          <Footer />
         </>
       </body>
     </html>

@@ -7,14 +7,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { signUpWithEmailAndPassword, signUpWithGoogle } from "@/firebase/Auth";
 import { auth } from "@/firebase/firebaseConfig";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 // import { addUserDataInDB } from '@/utils/addUserDataInDB';
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+
 import DynamicHead from "@/components/DynamicHead";
 
 const SignUp: React.FC = () => {
@@ -40,7 +38,8 @@ const SignUp: React.FC = () => {
     if (!/[A-Z]/.test(password)) newErrors.push("➤ One uppercase letter (A-Z)");
     if (!/[a-z]/.test(password)) newErrors.push("➤ One lowercase letter (a-z)");
     if (!/[0-9]/.test(password)) newErrors.push("➤ One number (0-9)");
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) newErrors.push("➤ One special character (!@#$...)");
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password))
+      newErrors.push("➤ One special character (!@#$...)");
 
     setErrors(newErrors);
   };
@@ -64,9 +63,8 @@ const SignUp: React.FC = () => {
     setIsButtonEnabled(isValid);
 
     if (password !== "" && confirmPassword !== "") {
-      setpasswordsMatch(password === confirmPassword)
+      setpasswordsMatch(password === confirmPassword);
     }
-
   }, [firstName, lastName, email, password, confirmPassword]);
 
   const getRedirectUrl = () => {
@@ -115,11 +113,11 @@ const SignUp: React.FC = () => {
         } else {
           toast.error(
             UserTokenData.error ||
-            "Failed to sign up. Email is already in use.",
+              "Failed to sign up. Email is already in use.",
           );
           setError(
             UserTokenData.error ||
-            "Failed to sign up. Please check your details and try again.",
+              "Failed to sign up. Please check your details and try again.",
           );
         }
       } catch (error) {
@@ -133,13 +131,15 @@ const SignUp: React.FC = () => {
   };
 
   const handleGoogleSignUp = async () => {
-    setError('');
+    setError("");
     setIsGoogleLoading(true); // Start Google sign-in loading
     let toastId: string | undefined;
 
     try {
       // Show loading toast
-      toastId = toast.loading('Signing in with Google...', { duration: Infinity });
+      toastId = toast.loading("Signing in with Google...", {
+        duration: Infinity,
+      });
 
       // Initialize Google provider and sign in with popup
       const provider = new GoogleAuthProvider();
@@ -155,39 +155,41 @@ const SignUp: React.FC = () => {
       toast.remove(toastId);
 
       if (response.status === 200) {
-        toast.success('Welcome! Redirecting...', { duration: 2000 });
+        toast.success("Welcome! Redirecting...", { duration: 2000 });
         const redirectUrl = getRedirectUrl();
         router.push(redirectUrl);
       } else {
-        console.error('Google sign-in error: ', response.error);
+        console.error("Google sign-in error: ", response.error);
         setError(response.error);
-        toast.error('Something went wrong. Please try again.', { duration: 3000 });
+        toast.error("Something went wrong. Please try again.", {
+          duration: 3214,
+        });
       }
     } catch (error: any) {
       // Remove the loading toast
       if (toastId) toast.remove(toastId);
 
       // Handle specific Firebase errors
-      let errorMessage = 'Something went wrong. Please try again.';
+      let errorMessage = "Something went wrong. Please try again.";
       switch (error.code) {
-        case 'auth/popup-closed-by-user':
-          errorMessage = 'Sign-in cancelled. Please try again.';
+        case "auth/popup-closed-by-user":
+          errorMessage = "Sign-in cancelled. Please try again.";
           break;
-        case 'auth/network-request-failed':
-          errorMessage = 'No internet connection. Please check your network.';
+        case "auth/network-request-failed":
+          errorMessage = "No internet connection. Please check your network.";
           break;
-        case 'auth/cancelled-popup-request':
-          errorMessage = 'Sign-in cancelled. Please try again.';
+        case "auth/cancelled-popup-request":
+          errorMessage = "Sign-in cancelled. Please try again.";
           break;
         default:
-          errorMessage = 'Something went wrong. Please try again.';
+          errorMessage = "Something went wrong. Please try again.";
       }
 
       // Set the error state and show error toast
       setError(errorMessage);
-      toast.error(errorMessage, { duration: 3000 });
+      toast.error(errorMessage, { duration: 3214 });
 
-      console.error('Google sign-up error: ', error);
+      console.error("Google sign-up error: ", error);
     } finally {
       setIsGoogleLoading(false); // End Google sign-in loading
     }
@@ -319,8 +321,8 @@ const SignUp: React.FC = () => {
 
             {/* Show real-time validation feedback */}
             <div className="mt-2 text-sm">
-              {password.length > 0 && ( // Only show validation messages if the user has typed something
-                errors.length > 0 ? (
+              {password.length > 0 && // Only show validation messages if the user has typed something
+                (errors.length > 0 ? (
                   <ul className="text-red-600">
                     {errors.map((error, index) => (
                       <li key={index}>{error}</li>
@@ -328,11 +330,8 @@ const SignUp: React.FC = () => {
                   </ul>
                 ) : (
                   <p className="text-green-600">✅ Password is strong</p>
-                )
-              )}
+                ))}
             </div>
-
-
           </div>
           <div className="relative">
             <label
@@ -360,7 +359,9 @@ const SignUp: React.FC = () => {
               </button>
             </div>
           </div>
-          <p className="text-red-700 font-semibold" hidden={passwordsMatch}>both password must match</p>
+          <p className="text-red-700 font-semibold" hidden={passwordsMatch}>
+            both password must match
+          </p>
           <input type="hidden" name="redirect" value={getRedirectUrl()} />
           {/* <div>
             <button
@@ -374,9 +375,10 @@ const SignUp: React.FC = () => {
             <button
               type="submit"
               disabled={!isButtonEnabled && errors.length > 0}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white red-gradient focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 ${isButtonEnabled ? "" : "opacity-50 cursor-not-allowed"
-                }`}
-            // onClick={handleSubmit}
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white red-gradient focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 ${
+                isButtonEnabled ? "" : "opacity-50 cursor-not-allowed"
+              }`}
+              // onClick={handleSubmit}
             >
               {isLoading ? (
                 <div className="flex items-center">
@@ -416,17 +418,22 @@ const SignUp: React.FC = () => {
         >
           {isGoogleLoading ? (
             <div className="flex items-center">
-              <FaSpinner className="animate-spin h-5 w-5 mr-3 text-gray-600" /> {/* Spinner icon */}
+              <FaSpinner className="animate-spin h-5 w-5 mr-3 text-gray-600" />{" "}
+              {/* Spinner icon */}
               Signing in...
             </div>
           ) : (
             <>
-              <FcGoogle size={26} className="hover:scale-105 transition-transform duration-200" />
-              <p className="text-gray-700 hover:text-gray-900 transition-colors duration-200">Sign In with Google</p>
+              <FcGoogle
+                size={26}
+                className="hover:scale-105 transition-transform duration-200"
+              />
+              <p className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
+                Sign In with Google
+              </p>
             </>
           )}
         </button>
-
 
         <p className="text-gray-500 mt-3 text-sm text-center">
           Already have an account?{" "}

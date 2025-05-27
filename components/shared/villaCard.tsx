@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import OptimizedImage from "../ui/OptimizedImage";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -120,19 +120,18 @@ export default function VillaCard({
         <div
           className={`h-[75%] ${className} bg-gray-100 overflow-hidden relative`}
         >
-          {image ? (
-            <Image
-              src={image}
-              alt="Villa Image"
-              width={400}
-              height={400}
-              className="object-cover w-full h-full"
-            />
-          ) : (
-            <div className="flex w-full h-full justify-center items-center text-gray-500">
-              <MdOutlineImageNotSupported size={50} />
-            </div>
-          )}
+          <OptimizedImage
+            src={image || ''}
+            alt={`${name} in ${city}, ${state}`}
+            width={400}
+            height={400}
+            className="object-cover w-full h-full"
+            containerClassName="w-full h-full"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={false}
+            loading="lazy"
+            quality={80}
+          />
 
           <div className="absolute top-3 left-3 flex gap-2 z-1">
             {bnbVerified && (

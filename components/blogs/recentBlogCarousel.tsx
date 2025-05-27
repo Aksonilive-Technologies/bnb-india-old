@@ -1,11 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+
 import Carousel from "react-multi-carousel";
+
 import "react-multi-carousel/lib/styles.css";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
 import { getExploreBlogs } from "@/actions/blog/blog.action";
-import BlogCard from '@/components/blogs/blogCard';
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+import BlogCard from "@/components/blogs/blogCard";
 
 // Define the type for the custom arrow component props
 interface ArrowProps {
@@ -35,7 +39,7 @@ const CustomRightArrow: React.FC<ArrowProps> = ({ onClick }) => (
 // Define the responsive settings with the correct type
 const responsive: any = {
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+    breakpoint: { max: 3214, min: 1024 },
     items: 4,
     slidesToSlide: 1, // optional, default to 1.
   },
@@ -71,12 +75,11 @@ export default function BlogMultiCardCarousel() {
     const fetchBlogs = async () => {
       setLoading(true);
       try {
-        const response: any = await getExploreBlogs('NA');
+        const response: any = await getExploreBlogs("NA");
         if (!response.success) {
-          throw new Error('Failed to fetch blogs');
+          throw new Error("Failed to fetch blogs");
         }
         console.log(response);
-
 
         setBlogs(response.data);
         setLoading(false);
@@ -84,60 +87,54 @@ export default function BlogMultiCardCarousel() {
         setError(error.message);
         setLoading(false);
       }
-
     };
 
     fetchBlogs();
   }, []);
-
 
   // if (loading) {
   //   return <SkeletonLoader />;
   // }
   return (
     <div className="py-4 w-full sm:p-4">
-      {
-        loading ?
-          <div className=" flex flex-row justify-around gap-2 w-full">
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
-
-
-          </div> :
-
-          <div className="relative">
-            <Carousel
-              swipeable={true}
-              draggable={false}
-              responsive={responsive}
-              ssr={true} // means to render carousel on server-side.
-              infinite={true}
-              autoPlaySpeed={10000}
-              keyBoardControl={true}
-              customTransition="all .5s"
-              transitionDuration={500}
-              containerClass="carousel-container"
-              // removeArrowOnDeviceType={["tablet", "mobile"]}
-              dotListClass="custom-dot-list-style"
-              itemClass="carousel-item-padding-40-px"
-              customLeftArrow={<CustomLeftArrow onClick={() => { }} />}
-              customRightArrow={<CustomRightArrow onClick={() => { }} />}
-            >
-              {blogs.map((data: BlogPost, index: any) => (
-                <BlogCard
+      {loading ? (
+        <div className=" flex flex-row justify-around gap-2 w-full">
+          <SkeletonLoader />
+          <SkeletonLoader />
+          <SkeletonLoader />
+          <SkeletonLoader />
+        </div>
+      ) : (
+        <div className="relative">
+          <Carousel
+            swipeable={true}
+            draggable={false}
+            responsive={responsive}
+            ssr={true} // means to render carousel on server-side.
+            infinite={true}
+            autoPlaySpeed={10000}
+            keyBoardControl={true}
+            customTransition="all .5s"
+            transitionDuration={500}
+            containerClass="carousel-container"
+            // removeArrowOnDeviceType={["tablet", "mobile"]}
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px"
+            customLeftArrow={<CustomLeftArrow onClick={() => {}} />}
+            customRightArrow={<CustomRightArrow onClick={() => {}} />}
+          >
+            {blogs.map((data: BlogPost, index: any) => (
+              <BlogCard
                 key={data.id}
                 id={data.id}
                 image={data.imageUrl}
                 name={data.title}
-                discription={data.content}                       
-                />
-              ))}
-            </Carousel>
-          </div>
-      }
-
+                discription={data.content}
+              />
+            ))}
+          </Carousel>
+        </div>
+      )}
     </div>
   );
 }

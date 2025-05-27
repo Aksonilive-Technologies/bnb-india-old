@@ -2,14 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+
 import truncateText from "@/utils/CommonFunctions";
 import { LuMapPin } from "react-icons/lu";
 
 import "@/styles/funkySlider.css";
-import Link from "next/link";
-import { fetchLuxuryVillas } from '@/actions/listing/listing.action';
-import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
+import Link from "next/link";
+
+import { fetchLuxuryVillas } from "@/actions/listing/listing.action";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 interface LuxuryVilla {
   id: number;
@@ -35,7 +37,7 @@ const FunkeySlider = () => {
   const [fetching, setFetching] = useState<boolean>(true);
   const [data, setData] = useState<LuxuryVilla[]>([]);
 
-  const timeRunning = 3000;
+  const timeRunning = 3214;
   const timeAutoNext = 8000;
   let runTimeOut: NodeJS.Timeout;
   let runNextAuto: NodeJS.Timeout;
@@ -75,14 +77,17 @@ const FunkeySlider = () => {
     if (runningTimeRef.current) {
       runningTimeRef.current.style.animation = "none";
       runningTimeRef.current.offsetHeight; // Trigger reflow
-      runningTimeRef.current.style.animation = "runningTime 7s linear 1 forwards";
+      runningTimeRef.current.style.animation =
+        "runningTime 7s linear 1 forwards";
     }
   };
 
   const showSlider = (type: "next" | "prev") => {
     if (!listRef.current || !carouselRef.current) return;
 
-    const sliderItemsDom = Array.from(listRef.current.querySelectorAll<HTMLDivElement>(".item"));
+    const sliderItemsDom = Array.from(
+      listRef.current.querySelectorAll<HTMLDivElement>(".item"),
+    );
 
     if (sliderItemsDom.length === 0) return;
 
@@ -113,7 +118,6 @@ const FunkeySlider = () => {
       {fetching ? (
         <div className="carousel">
           <div className="w-full p-4 space-y-4">
-
             <div className="w-full h-[80vh] bg-gray-300 animate-pulse rounded-lg"></div>
           </div>
         </div>
@@ -135,12 +139,14 @@ const FunkeySlider = () => {
                     <div className="title">{villa.title}</div>
                     <div className="flex pl-2 gap-1 items-center">
                       <LuMapPin />
-                      <p className="state" >
+                      <p className="state">
                         {villa.city}, {villa.state}
                       </p>
                     </div>
                     <div className="des">
-                      {villa.des.length > 200 ? villa.des.substring(0, 200) + "..." : villa.des}
+                      {villa.des.length > 200
+                        ? villa.des.substring(0, 200) + "..."
+                        : villa.des}
                     </div>
                     <Link
                       href={`/details/${villa.id}`}
@@ -153,10 +159,18 @@ const FunkeySlider = () => {
               ))}
           </div>
           <div className="arrows">
-            <button className="prev  flex items-center justify-center" ref={prevBtnRef} onClick={() => showSlider("prev")}>
+            <button
+              className="prev  flex items-center justify-center"
+              ref={prevBtnRef}
+              onClick={() => showSlider("prev")}
+            >
               <AiOutlineLeft size={24} className="text-gray-700 font-900" />
             </button>
-            <button className="next flex items-center justify-center" ref={nextBtnRef} onClick={() => showSlider("next")}>
+            <button
+              className="next flex items-center justify-center"
+              ref={nextBtnRef}
+              onClick={() => showSlider("next")}
+            >
               <AiOutlineRight size={24} className="text-gray-700 font-900" />
             </button>
           </div>

@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Carousel from "react-multi-carousel";
 
@@ -40,7 +39,7 @@ const CustomRightArrow: React.FC<ArrowProps> = ({ onClick }) => (
 // Define the responsive settings with the correct type
 const responsive: any = {
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+    breakpoint: { max: 3214, min: 1024 },
     items: 1,
     slidesToSlide: 1, // optional, default to 1.
   },
@@ -57,24 +56,20 @@ const responsive: any = {
 };
 
 export default function BlogCarousel() {
-
   const [maxLength, setMaxLength] = useState(500);
 
   useEffect(() => {
-    if (typeof window !== 'undefined'){
-
+    if (typeof window !== "undefined") {
       const updateMaxLength = () => {
         setMaxLength(window.innerWidth < 800 ? 120 : 500);
       };
-      
+
       updateMaxLength();
-      window.addEventListener('resize', updateMaxLength);
-      
-      return () => window.removeEventListener('resize', updateMaxLength);
+      window.addEventListener("resize", updateMaxLength);
+
+      return () => window.removeEventListener("resize", updateMaxLength);
     }
   }, []);
-
-
 
   return (
     <div className="sm:p-4">
@@ -94,8 +89,8 @@ export default function BlogCarousel() {
           removeArrowOnDeviceType={["mobile"]}
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
-          customLeftArrow={<CustomLeftArrow onClick={() => { }} />}
-          customRightArrow={<CustomRightArrow onClick={() => { }} />}
+          customLeftArrow={<CustomLeftArrow onClick={() => {}} />}
+          customRightArrow={<CustomRightArrow onClick={() => {}} />}
         >
           {carouselData.map((data, index) => (
             <div key={index} className="relative  bg-gray-400  h-[70vh] ">
@@ -121,7 +116,6 @@ export default function BlogCarousel() {
                 <h2 className="md:text-lg py-2">
                   {truncateText(data.discription, maxLength)}
                 </h2>
-
               </div>
             </div>
           ))}

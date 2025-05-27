@@ -1,7 +1,7 @@
 "use client";
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Calendar} from "rsuite";
+import { Calendar } from "rsuite";
 
 import "rsuite/Calendar/styles/index.css";
 
@@ -13,19 +13,14 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import {
-  getListingForOwner
-} from "@/actions/listing/listing.action";
-import {
-  addHotelData,
-  getHotelData
-} from "@/actions/price/price.action";
+import { getListingForOwner } from "@/actions/listing/listing.action";
+import { addHotelData, getHotelData } from "@/actions/price/price.action";
 import { useUserStore } from "@/store/store";
 
 // function getTodoList(date: any) {
 //   const day = date.getDate();
 //   // Generate a list of todos for each day of the month
-//   return [{ date: day, title: "3000", price: "300" }];
+//   return [{ date: day, title: "3214", price: "300" }];
 // }
 
 interface PricingDetails {
@@ -50,7 +45,6 @@ const Calender = ({ Villa_id }: any) => {
   const today = startOfDay(new Date());
   const [selectedDate, setSelectDate] = useState(today);
   const [currentMonth, setcurrentMonth] = useState(format(today, "MMMM"));
-  
 
   const { user } = useUserStore();
 
@@ -69,7 +63,6 @@ const Calender = ({ Villa_id }: any) => {
     // console.log(currentVillaData , user.user_id);
 
     if (!currentVillaData || currentVillaData[0]?.host_id !== user.user_id) {
-      
       setError("You are not authorized");
     }
 
@@ -84,7 +77,7 @@ const Calender = ({ Villa_id }: any) => {
     discount: 0,
     minBookingDays: 1,
   });
-  
+
   useEffect(() => {
     if (currentVilla?.pricePerDay) {
       setCurrentPriceDetails((prev) => ({
@@ -93,7 +86,6 @@ const Calender = ({ Villa_id }: any) => {
       }));
     }
   }, [currentVilla]);
-  
 
   useEffect(() => {
     handleFetchListings();
@@ -182,7 +174,7 @@ const Calender = ({ Villa_id }: any) => {
         pricingDetails: currentPriceDetails,
         blockNight: isBlockStatus,
       };
-      console.log("Changing data", data)
+      console.log("Changing data", data);
       try {
         setLoading(true);
         const newPriceData = await addHotelData(data);
@@ -200,7 +192,7 @@ const Calender = ({ Villa_id }: any) => {
     const selectedHotelData: any = hotelPriceData.find((item: any) =>
       isSameDay(new Date(item.date), selectedDate),
     );
-  
+
     if (selectedHotelData) {
       setCurrentPriceDetails(selectedHotelData?.pricingDetails);
       setisBlocked(selectedHotelData?.blockNight);
@@ -213,7 +205,6 @@ const Calender = ({ Villa_id }: any) => {
       setisBlocked(false);
     }
   }, [selectedDate, hotelPriceData]);
-  
 
   const AlterDiscount = (val: any) => {
     setCurrentPriceDetails((prevDetails: any) => ({
@@ -321,7 +312,10 @@ const Calender = ({ Villa_id }: any) => {
             {isDropdownOpen && (
               <div className="absolute z-10 mt-2 left-2 w-full lg:w-[19vw] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100">
                 {listings.map((listing: any) => {
-                  if (listing.listing_id !== Villa_id && listing.isListed !== false) {
+                  if (
+                    listing.listing_id !== Villa_id &&
+                    listing.isListed !== false
+                  ) {
                     return (
                       <div
                         key={listing.listing_id}

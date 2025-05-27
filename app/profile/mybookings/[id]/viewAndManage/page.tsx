@@ -3,31 +3,54 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+
 import { getreciptData } from "@/actions/booking/booking.action";
-import ImageWithFallBack from "@/components/shared/ImageFallback";
 import { cancelBooking } from "@/actions/payment/payment.action";
 import toast from "react-hot-toast";
-import { formatNumberWithCommas } from "@/app/details/[id]/paymentUtils/utils";
+
 import BookingCancellationPolicy from "@/components/shared/bookingCancellationPolicy";
+import ImageWithFallBack from "@/components/shared/ImageFallback";
+import { formatNumberWithCommas } from "@/app/details/[id]/paymentUtils/utils";
 
 // Adjust the path as necessary
 const statusLabels: any = {
   pending: { label: "🔄 Pending", color: "bg-yellow-100 text-yellow-700" },
   Pending: { label: "🔄 Pending", color: "bg-yellow-100 text-yellow-700" },
-  cancellationInProgress: { label: "⏳ Processing Cancellation", color: "bg-orange-100 text-orange-700" },
-  refundProcessing: { label: "🔁 Refund in Process", color: "bg-blue-100 text-blue-700" },
-  refundProcessed: { label: "✅ Refunded", color: "bg-green-100 text-green-700" },
+  cancellationInProgress: {
+    label: "⏳ Processing Cancellation",
+    color: "bg-orange-100 text-orange-700",
+  },
+  refundProcessing: {
+    label: "🔁 Refund in Process",
+    color: "bg-blue-100 text-blue-700",
+  },
+  refundProcessed: {
+    label: "✅ Refunded",
+    color: "bg-green-100 text-green-700",
+  },
   refundFailed: { label: "❌ Refund Failed", color: "bg-red-100 text-red-700" },
   failed: { label: "❌ Payment Failed", color: "bg-red-100 text-red-700" },
-  completed: { label: "🎉 Payment Completed", color: "bg-green-100 text-green-700" },
+  completed: {
+    label: "🎉 Payment Completed",
+    color: "bg-green-100 text-green-700",
+  },
   confirmed: { label: "📦 Confirmed", color: "bg-green-100 text-green-700" },
   cancelled: { label: "🚫 Cancelled", color: "bg-red-100 text-red-700" },
-  processing: { label: "⏳ Processing", color: "bg-orange-100 text-orange-700" },
+  processing: {
+    label: "⏳ Processing",
+    color: "bg-orange-100 text-orange-700",
+  },
   onHold: { label: "⏸️ On Hold", color: "bg-gray-100 text-gray-700" },
-  noRefund: { label: "🚫 Refund Not Eligible", color: "bg-gray-100 text-gray-700"},
+  noRefund: {
+    label: "🚫 Refund Not Eligible",
+    color: "bg-gray-100 text-gray-700",
+  },
 };
 
-const defaultStatus: any = { label: "Not Found", color: "bg-gray-100 text-gray-700" }
+const defaultStatus: any = {
+  label: "Not Found",
+  color: "bg-gray-100 text-gray-700",
+};
 
 const BookingDetails = () => {
   const params = useParams();
@@ -43,7 +66,6 @@ const BookingDetails = () => {
       if (response.success) {
         setBookingData(response?.data);
         console.log(response.data);
-
       } else {
         setError(response?.error || "Failed to fetch booking data.");
       }
@@ -57,30 +79,32 @@ const BookingDetails = () => {
   useEffect(() => {
     fetchBookingData();
   }, [id]);
-  
+
   function confirmPopup(message: string): Promise<boolean> {
     return new Promise((resolve) => {
       const container = document.createElement("div");
-      container.className = "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50";
-      
+      container.className =
+        "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50";
+
       const popup = document.createElement("div");
       popup.className = "bg-white p-6 rounded-lg shadow-lg max-w-md w-full";
-      
+
       const text = document.createElement("h2");
       text.className = "text-lg font-semibold text-gray-900";
       text.textContent = message;
-      
+
       const buttonContainer = document.createElement("div");
       buttonContainer.className = "flex justify-end gap-3 mt-4";
-      
+
       const cancelButton = document.createElement("button");
-      cancelButton.className = "px-4 py-2 border rounded text-gray-600 border-gray-300 hover:bg-black hover:text-white";
+      cancelButton.className =
+        "px-4 py-2 border rounded text-gray-600 border-gray-300 hover:bg-black hover:text-white";
       cancelButton.textContent = "No";
       cancelButton.onclick = () => {
         document.body.removeChild(container);
         resolve(false);
       };
-      
+
       const confirmButton = document.createElement("button");
       confirmButton.className = "px-4 py-2 red-gradient text-white rounded";
       confirmButton.textContent = "Yes, continue with cancellation";
@@ -88,7 +112,7 @@ const BookingDetails = () => {
         document.body.removeChild(container);
         resolve(true);
       };
-      
+
       buttonContainer.appendChild(cancelButton);
       buttonContainer.appendChild(confirmButton);
       popup.appendChild(text);
@@ -98,25 +122,31 @@ const BookingDetails = () => {
     });
   }
 
-
   const [cancel, setCancel] = useState(false);
   const handleCancelBooking = async (Bookingid: string) => {
     if (cancel) return;
     try {
-
-      const confirmation = await confirmPopup("Are you sure you want to cancel this booking?");
+      const confirmation = await confirmPopup(
+        "Are you sure you want to cancel this booking?",
+      );
       if (!confirmation) return;
       setCancel(true);
-      const response = await cancelBooking(Bookingid, booking?.transactionID, booking?.totalPrice, true);
+      const response = await cancelBooking(
+        Bookingid,
+        booking?.transactionID,
+        booking?.totalPrice,
+        true,
+      );
 
       if (response.success) {
         const result = response.result;
         console.log("Booking canceled:", result);
         toast.success("Booking successfully canceled.");
         setTimeout(() => {
-          toast.success("Your refund will be processed within the next 48 hours.");
-        }, 3000);
-
+          toast.success(
+            "Your refund will be processed within the next 48 hours.",
+          );
+        }, 3214);
 
         // Optionally, refresh data or update state
 
@@ -161,7 +191,10 @@ const BookingDetails = () => {
         </p>
       </header>
       {isPopupOpen && (
-        <BookingCancellationPolicy setIsPopupOpen={setIsPopupOpen} cancellationType={villa.cancellationType} />
+        <BookingCancellationPolicy
+          setIsPopupOpen={setIsPopupOpen}
+          cancellationType={villa.cancellationType}
+        />
       )}
 
       <div className="max-w-screen-lg mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 ">
@@ -182,7 +215,8 @@ const BookingDetails = () => {
               </h2>
 
               <p className="text-gray-700 text-sm">
-                📍 {villa?.address}, {villa?.area_name}, {villa?.city}, {villa?.state}
+                📍 {villa?.address}, {villa?.area_name}, {villa?.city},{" "}
+                {villa?.state}
               </p>
 
               <p className="text-gray-700 text-sm">
@@ -320,19 +354,29 @@ const BookingDetails = () => {
             ))} */}
             <div className="flex justify-between mt-1 text-gray-700">
               <span>{"Reservation Charges"}</span>
-              <span className="font-medium">₹ {formatNumberWithCommas(booking?.totalPrice - booking?.serviceFee) || "0.00"}</span>
+              <span className="font-medium">
+                ₹{" "}
+                {formatNumberWithCommas(
+                  booking?.totalPrice - booking?.serviceFee,
+                ) || "0.00"}
+              </span>
             </div>
             <div className="flex justify-between mt-2 text-gray-700">
               <span>{"Service Charges"}</span>
-              <span className="font-medium">₹ {formatNumberWithCommas(booking.serviceFee) || "0.00"}</span>
+              <span className="font-medium">
+                ₹ {formatNumberWithCommas(booking.serviceFee) || "0.00"}
+              </span>
             </div>
             <div className="flex justify-between font-bold border-t mt-2 pt-2 text-gray-900">
               <span>Total Price</span>
-              <span>₹ {formatNumberWithCommas(booking?.totalPrice) || "NA"}</span>
+              <span>
+                ₹ {formatNumberWithCommas(booking?.totalPrice) || "NA"}
+              </span>
             </div>
             {/* {booking?.transactionID && ( */}
             <div className="mt-3 text-sm text-gray-500">
-              <span className="font-medium text-gray-700">Payment ID:</span> {booking?.transactionID || "Not Available"}
+              <span className="font-medium text-gray-700">Payment ID:</span>{" "}
+              {booking?.transactionID || "Not Available"}
             </div>
             {/* )} */}
           </div>
@@ -346,27 +390,46 @@ const BookingDetails = () => {
             </div>
           </div> */}
           <div className="p-3 mb-[20px] border rounded-md shadow-md w-full max-w-sm bg-white">
-            <h3 className="text-base font-semibold text-gray-800 mb-3">Booking Details</h3>
+            <h3 className="text-base font-semibold text-gray-800 mb-3">
+              Booking Details
+            </h3>
             <div className="flex flex-col gap-2">
               {/* Booking Status */}
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-gray-700">Booking Status:</span>
-                <span className={`px-2 py-1 rounded-md font-medium ${statusLabels[booking?.status]?.color || defaultStatus.color}`}>
+                <span className="font-medium text-gray-700">
+                  Booking Status:
+                </span>
+                <span
+                  className={`px-2 py-1 rounded-md font-medium ${statusLabels[booking?.status]?.color || defaultStatus.color}`}
+                >
                   {statusLabels[booking?.status]?.label || defaultStatus.label}
                 </span>
               </div>
 
               {/* Transaction Status */}
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-gray-700">Transaction Status:</span>
-                <span className={`px-2 py-1 rounded-md font-medium ${statusLabels[transaction[0]?.payment_status]?.color || defaultStatus.color}`}>
-                  {statusLabels[transaction[0]?.payment_status]?.label || defaultStatus.label}
+                <span className="font-medium text-gray-700">
+                  Transaction Status:
+                </span>
+                <span
+                  className={`px-2 py-1 rounded-md font-medium ${statusLabels[transaction[0]?.payment_status]?.color || defaultStatus.color}`}
+                >
+                  {statusLabels[transaction[0]?.payment_status]?.label ||
+                    defaultStatus.label}
                 </span>
               </div>
               <div className="text-sm text-gray-700 text-center mt-4 p-2 bg-gray-100 rounded-lg">
                 If you have any questions, feel free to contact
-                <span><Link className="font-semibold text-blue-600  cursor-pointer hover:underline" href={"/helpandsupport"}> BnBIndia </Link></span>
-                 for assistance.
+                <span>
+                  <Link
+                    className="font-semibold text-blue-600  cursor-pointer hover:underline"
+                    href={"/helpandsupport"}
+                  >
+                    {" "}
+                    BnBIndia{" "}
+                  </Link>
+                </span>
+                for assistance.
               </div>
               {/* <p>For any querry please contact bnb Help</p> */}
             </div>
@@ -385,8 +448,8 @@ const BookingDetails = () => {
               </a>
             </button>
 
-            {
-              transaction[0]?.payment_status === "confirmed" && addreviewflag[0].addreviewflag === "False" && (
+            {transaction[0]?.payment_status === "confirmed" &&
+              addreviewflag[0].addreviewflag === "False" && (
                 <button
                   onClick={async () => {
                     setCancel(true);
@@ -408,20 +471,16 @@ const BookingDetails = () => {
                     "Cancel Booking"
                   )}
                 </button>
+              )}
 
-              )
-            }
-
-            {
-              addreviewflag[0].addreviewflag === "True" && (
-                <Link
-                  href={`/add-review/?villaId=${villa?.listing_id}&bookingId=${id}`}
-                  className="w-full px-4 py-2  bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-lg transition duration-300 hover:bg-grey-600 hover:shadow-md"
-                >
-                  Review Property
-                </Link>
-              )
-            }
+            {addreviewflag[0].addreviewflag === "True" && (
+              <Link
+                href={`/add-review/?villaId=${villa?.listing_id}&bookingId=${id}`}
+                className="w-full px-4 py-2  bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-lg transition duration-300 hover:bg-grey-600 hover:shadow-md"
+              >
+                Review Property
+              </Link>
+            )}
           </div>
         </section>
       </div>

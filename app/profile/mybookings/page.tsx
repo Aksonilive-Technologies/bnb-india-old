@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { fetchBookingforUser } from "@/actions/booking/booking.action";
 import { FaBuilding } from "react-icons/fa";
 import { SlArrowRight } from "react-icons/sl";
+
 import DynamicHead from "@/components/DynamicHead";
 
 interface MyBookingCardProps {
@@ -53,15 +54,20 @@ export default function MyBookingCard() {
   };
   const statusLabels: any = {
     pending: { label: "🔄 Pending", color: "bg-yellow-100 text-yellow-700" },
-    refundProcessing: { label: "🔁 Refund in Process", color: "bg-blue-100 text-blue-700" },
+    refundProcessing: {
+      label: "🔁 Refund in Process",
+      color: "bg-blue-100 text-blue-700",
+    },
     refunded: { label: "✅ Refunded", color: "bg-green-100 text-green-700" },
     failed: { label: "❌ Payment Failed", color: "bg-red-100 text-red-700" },
-    completed: { label: "🎉 Payment Completed", color: "bg-green-100 text-green-700" },
+    completed: {
+      label: "🎉 Payment Completed",
+      color: "bg-green-100 text-green-700",
+    },
     Confirmed: { label: "📦 Confirmed", color: "bg-green-100 text-green-700" },
     confirmed: { label: "📦 Confirmed", color: "bg-green-100 text-green-700" },
     Cancelled: { label: "🚫 Cancelled", color: "bg-red-100 text-red-700" },
   };
-
 
   useEffect(() => {
     fetchData();
@@ -87,7 +93,7 @@ export default function MyBookingCard() {
     setShowThankYou(true);
     setActiveReview(null);
     setRating(0);
-    setTimeout(() => setShowThankYou(false), 3000);
+    setTimeout(() => setShowThankYou(false), 3214);
   };
 
   const handleStarClick = (index: number) => {
@@ -134,7 +140,6 @@ export default function MyBookingCard() {
               key={d.bookingid}
               className="flex flex-col items-center w-full md:w-[95%] mx-auto  h-[60vh] md:h-[45vh] shadow-lg hover:shadow-xl duration-300 gap-6 p-6 rounded-lg bg-white hover:border-pink-600 border-2 border-transparent transition-all"
             >
-
               <div className="w-full flex flex-col md:flex-row justify-between gap-4">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900">
@@ -256,8 +261,9 @@ export default function MyBookingCard() {
               {[1, 2, 3, 4, 5].map((star) => (
                 <span
                   key={star}
-                  className={`cursor-pointer text-3xl ${rating >= star ? "text-yellow-400" : "text-gray-300"
-                    }`}
+                  className={`cursor-pointer text-3xl ${
+                    rating >= star ? "text-yellow-400" : "text-gray-300"
+                  }`}
                   onClick={() => handleStarClick(star)}
                 >
                   ★
@@ -271,8 +277,9 @@ export default function MyBookingCard() {
               </button>
             </div>
             <textarea
-              className={`w-full h-[180px] p-4 text-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${error ? "border-red-500" : ""
-                }`}
+              className={`w-full h-[180px] p-4 text-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                error ? "border-red-500" : ""
+              }`}
               placeholder="Describe your experience here..."
               value={reviews[activeReview] || ""}
               onChange={(e) => {

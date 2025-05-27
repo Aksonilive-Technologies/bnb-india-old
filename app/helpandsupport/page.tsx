@@ -12,7 +12,7 @@ import {
 import { RiCustomerService2Line } from "react-icons/ri";
 
 import DynamicHead from "@/components/DynamicHead";
-import Footer from "@/components/shared/footer";
+
 import Navbar from "@/components/shared/navbar/generalNavbar";
 
 export default function HelpAndSupportPage() {
@@ -102,7 +102,7 @@ export default function HelpAndSupportPage() {
           </p>
         </div>
       </div>
-        <Footer />
+        
     </div>
   );
 }
