@@ -26,8 +26,8 @@ PineStays is a platform for unique accommodations and experiences, similar to Ai
   - PostgreSQL via Prisma ORM
   - Prisma for database schema management and type-safe queries
 - **Authentication**: 
-  - NextAuth.js for authentication
-  - Firebase Authentication as a provider
+  - Currently using Firebase Authentication + Prisma DB for user data storage
+  - Transitioning to API-based authentication with external backend
 - **File Storage**: Firebase Storage for images and other media
 - **Real-time Features**: Socket.io for real-time communication (chat)
 
@@ -107,9 +107,63 @@ The database is structured around several key models:
 - **Wishlist**: Saved properties for users
 - **Blog**: Content publishing system
 
-## Authentication & Authorization
+## Current Authentication Implementation
 
-The application uses NextAuth.js combined with Firebase Authentication to handle user authentication. Different user roles (guest, host) have different permissions and access levels throughout the application.
+The application currently uses a combination of Firebase Authentication and PostgreSQL database:
+
+1. **Firebase Authentication**: Manages the authentication process including:
+   - Email/password login
+   - Google OAuth integration
+   - Token generation and verification
+   - Session management
+
+2. **PostgreSQL/Prisma**: Stores user profile data including:
+   - Basic user information (name, email, phone)
+   - Profile details and preferences
+   - Host-related information
+   - Connection to other data models
+
+3. **Current Authentication Flow**:
+   - User registers/logs in via Firebase Auth
+   - Firebase returns authentication tokens
+   - User data is stored/retrieved from Prisma database
+   - Cookies are used to maintain sessions
+   - JWT tokens used for API authorization
+
+## API Integration Requirements
+
+The application needs to transition from Firebase Authentication + Prisma DB to a fully API-based authentication system:
+
+1. **Backend API Endpoint**: https://bnbindiabeta.vercel.app
+
+2. **Authentication API Endpoints**:
+   - **POST /api/auth/login** - User login
+     - Request: `{ email, password }`
+     - Response: `{ success, token, user }`
+
+   - **POST /api/auth/register** - User registration
+     - Request: `{ firstName, lastName, email, password, phoneNumber }`
+     - Response: `{ success, token, user }`
+
+   - **GET /api/auth/user** - Get current user details
+     - Headers: Authorization token
+     - Response: `{ success, user }`
+
+   - **PUT /api/auth/user** - Update user profile
+     - Headers: Authorization token
+     - Request: `{ firstName, lastName, email, phoneNumber, profileImage, etc. }`
+     - Response: `{ success, user }`
+
+3. **Authentication Flow Changes**:
+   - Replace Firebase Auth with API calls
+   - Maintain token-based authentication using JWT
+   - Update middleware for route protection
+   - Modify user profile management
+
+4. **Token Management**:
+   - Store JWT token in cookies
+   - Include token in API requests
+   - Handle token expiration and refresh
 
 ## Development Workflow
 
@@ -117,3 +171,4 @@ The application uses NextAuth.js combined with Firebase Authentication to handle
 - Prisma Studio for database management
 - TypeScript for type safety
 - ESLint and Prettier for code quality
+- API-first development approach for backend integration

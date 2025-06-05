@@ -1,133 +1,87 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { loginWithEmailAndPassword, signUpWithGoogle } from "@/firebase/Auth";
-import { auth } from "@/firebase/firebaseConfig";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
-import { FaSpinner } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 import DynamicHead from "@/components/DynamicHead";
+import { useAuth } from "@/context/AuthContext";
 
 const Login: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false); // Added for Google sign-in loading state
-  const router = useRouter();
-  const query = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const getRedirectUrl = (): string => {
-    const redirectUrl = query?.get("redirect");
-    return redirectUrl || "/";
-  };
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/";
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoading) {
-      setIsLoading(true);
-      setError("");
+    console.log('Login form submitted with:', { email, password: '********' });
+    
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
 
-      try {
-        const userCredential = await loginWithEmailAndPassword(email, password);
-        if (userCredential.status === 200) {
-          toast.success("Logged in successfully! Redirecting...");
-          const redirectUrl = getRedirectUrl();
-          router.push(redirectUrl);
-        } else {
-          setError(userCredential.error || "Login failed. Please try again.");
-          toast.error(
-            userCredential.error || "Login failed. Please try again.",
-            { duration: 3214 },
-          );
-        }
-      } catch (error) {
-        console.error("Unexpected login error:", error);
-        setError("An unexpected error occurred. Please try again later.");
-        toast.error("An unexpected error occurred. Please try again later.", {
-          duration: 3214,
-        });
-      } finally {
-        setIsLoading(false);
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      console.log('Calling login function from AuthContext');
+      const response = await login(email, password);
+      console.log('Login response from AuthContext:', response);
+      
+      if (response.success) {
+        toast.success("Logged in successfully!");
+        router.push(redirectUrl);
+      } else {
+        setError(response.error || "Login failed. Please check your credentials.");
+        toast.error(response.error || "Login failed. Please check your credentials.");
       }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(error.message || "An unexpected error occurred");
+      toast.error(error.message || "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    setError("");
-    setIsGoogleLoading(true); // Start Google sign-in loading
-    let toastId: string | undefined;
-
+  const handleGoogleSignIn = async () => {
     try {
-      // Show loading toast
-      toastId = toast.loading("Signing in with Google...", {
-        duration: Infinity,
-      });
-
-      // Initialize Google provider and sign in with popup
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      // Get the ID token from the result
-      const token = await result.user.getIdToken();
-
-      // Send the token to your server for verification
-      const response: any = await signUpWithGoogle(token);
-
-      // Remove the loading toast
-      toast.remove(toastId);
-
-      if (response.status === 200) {
-        toast.success("Welcome! Redirecting...");
-        const redirectUrl = getRedirectUrl();
-        router.push(redirectUrl);
-      } else {
-        console.error("Google sign-in error: ", response.error);
-        setError(response.error);
-        toast.error("Something went wrong. Please try again.", {
-          duration: 3214,
-        });
-      }
+      setIsGoogleLoading(true);
+      setError(null);
+      
+      // Google sign-in will be implemented in a future update
+      toast.error("Google Sign In is temporarily unavailable. Please use email/password login.");
     } catch (error: any) {
-      // Remove the loading toast
-      if (toastId) toast.remove(toastId);
-
-      // Handle specific Firebase errors
-      let errorMessage = "Something went wrong. Please try again.";
-      switch (error.code) {
-        case "auth/popup-closed-by-user":
-          errorMessage = "Sign-in cancelled. Please try again.";
-          break;
-        case "auth/network-request-failed":
-          errorMessage = "No internet connection. Please check your network.";
-          break;
-        case "auth/cancelled-popup-request":
-          errorMessage = "Sign-in cancelled. Please try again.";
-          break;
-        default:
-          errorMessage = "Something went wrong. Please try again.";
-      }
-
-      // Set the error state and show error toast
-      setError(errorMessage);
-      toast.error(errorMessage, { duration: 3214 });
-
-      console.error("Google sign-up error: ", error);
+      console.error("Google sign-in error:", error);
+      setError(error.message || "An unexpected error occurred");
+      toast.error(error.message || "An unexpected error occurred");
     } finally {
-      setIsGoogleLoading(false); // End Google sign-in loading
+      setIsGoogleLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <DynamicHead title={"bnbIndia | Login"} />
-      <div className="bg-white p-8 rounded-lg w-full max-w-md">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="flex justify-center mb-6">
           <Link href="/" className="text-lg font-bold flex gap-2 items-center">
             <Image
@@ -150,6 +104,7 @@ const Login: React.FC = () => {
         </p>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label
@@ -164,10 +119,11 @@ const Login: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-              placeholder="Email"
+              placeholder="Enter your email"
               required
             />
           </div>
+          
           <div>
             <label
               htmlFor="password"
@@ -175,17 +131,26 @@ const Login: React.FC = () => {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-              placeholder="Password"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm pr-10"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer mt-1"
+              >
+                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+              </button>
+            </div>
           </div>
-          <input type="hidden" name="redirect" value={getRedirectUrl()} />
+          
           <div>
             <button
               type="submit"
@@ -193,7 +158,7 @@ const Login: React.FC = () => {
               disabled={isLoading}
             >
               {isLoading ? (
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                   <svg
                     className="animate-spin h-5 w-5 mr-3 text-white"
                     xmlns="http://www.w3.org/2000/svg"
@@ -222,7 +187,58 @@ const Login: React.FC = () => {
             </button>
           </div>
         </form>
-        <div className="flex justify-between mt-4 text-sm">
+        
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={isGoogleLoading}
+              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition duration-300"
+            >
+              {isGoogleLoading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3 text-gray-700"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0l4 4-4 4V5a6 6 0 00-6 6h1z"
+                    ></path>
+                  </svg>
+                  Processing...
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <FcGoogle className="mr-2" size={20} />
+                  Sign in with Google
+                </div>
+              )}
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex justify-between mt-6 text-sm">
           <Link
             href="/forgot-password"
             className="text-pink-600 hover:text-pink-900"
@@ -230,45 +246,17 @@ const Login: React.FC = () => {
             Forgot Password?
           </Link>
           <Link
-            href={`/register?redirect=${getRedirectUrl()}`}
+            href="/register"
             className="text-pink-600 hover:text-pink-900"
           >
             Create Account
           </Link>
         </div>
-        <hr className="my-6" />
-        <button
-          onClick={handleGoogleSignUp}
-          className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-300 hover:shadow-md"
-          disabled={isGoogleLoading}
-        >
-          {isGoogleLoading ? (
-            <div className="flex items-center">
-              <FaSpinner className="animate-spin h-5 w-5 mr-3 text-gray-600" />{" "}
-              {/* Spinner icon */}
-              Signing in...
-            </div>
-          ) : (
-            <>
-              <FcGoogle
-                size={26}
-                className="hover:scale-105 transition-transform duration-200"
-              />
-              <p className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
-                Sign In with Google
-              </p>
-            </>
-          )}
-        </button>
       </div>
     </div>
   );
 };
 
 export default function LoginPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Login />
-    </Suspense>
-  );
+  return <Login />;
 }
