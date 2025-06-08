@@ -1,10 +1,13 @@
 name: Deploy to Vercel (Beta)
 
 on:
-  pull_request:
-    types: [closed]
+  # pull_request:
+  #   types: [closed]
+  #   branches:
+  #     - beta
+  push:
     branches:
-      - beta
+      - main
 
 jobs:
   deploy:
