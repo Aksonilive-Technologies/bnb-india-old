@@ -2,6 +2,8 @@
 import CryptoJS from 'crypto-js';
 
 const secretKey = process.env.CRYPTO_SECRET_KEY as string;
+console.log(secretKey);
+
 if (!secretKey) {
     throw new Error('CRYPTO_SECRET_KEY environment variable is not defined');
 }

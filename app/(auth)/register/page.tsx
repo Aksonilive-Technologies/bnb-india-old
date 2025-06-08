@@ -71,13 +71,14 @@ const SignUp: React.FC = () => {
     const redirectUrl = querry!.get("redirect") as string | undefined;
     // console.log(redirectUrl);
 
-    return redirectUrl || "/";
+    return redirectUrl || "/login";
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isLoading) {
       setIsLoading(true);
+
       if (
         !firstName ||
         !lastName ||
@@ -88,47 +89,119 @@ const SignUp: React.FC = () => {
       ) {
         setError("All fields are required.");
         toast.error("All fields are required.");
+        setIsLoading(false);
         return;
       }
 
       if (password !== confirmPassword) {
         setError("Passwords do not match.");
         toast.error("Passwords do not match.");
+        setIsLoading(false);
         return;
       }
 
       try {
-        toast.loading("Registering in...");
-        const UserTokenData: any = await signUpWithEmailAndPassword(
-          email,
-          password,
-          firstName,
-          lastName,
-          mobileNumber,
+        toast.loading("Registering...");
+
+        const res = await fetch(
+          "https://bnbindiabeta.vercel.app/api/auth/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              mobileNumber,
+              email,
+              password,
+            }),
+          },
         );
-        if (UserTokenData.status === 200) {
-          toast.success("Registration Successful!");
+
+        console.log("Response:", res);
+
+        const data = await res.json();
+        toast.dismiss();
+        console.log("Data:", data);
+
+        if (res.ok) {
+          toast.success("Registration successful!");
           const redirectUrl = getRedirectUrl();
           router.push(redirectUrl);
         } else {
-          toast.error(
-            UserTokenData.error ||
-              "Failed to sign up. Email is already in use.",
-          );
-          setError(
-            UserTokenData.error ||
-              "Failed to sign up. Please check your details and try again.",
-          );
+          toast.error(data.error || "Failed to sign up.");
+          setError(data.error || "Registration failed.");
         }
       } catch (error) {
-        console.error("Sign-up error: ", error);
-        toast.error("Failed to sign up. Email is already in use.");
-        setError("Failed to sign up. Please check your details and try again.");
+        console.error("Sign-up error:", error);
+        toast.dismiss();
+        toast.error("Something went wrong.");
+        setError("Something went wrong.");
       }
 
       setIsLoading(false);
     }
   };
+
+  // const handleSignUp = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!isLoading) {
+  //     setIsLoading(true);
+  //     if (
+  //       !firstName ||
+  //       !lastName ||
+  //       !mobileNumber ||
+  //       !email ||
+  //       !password ||
+  //       !confirmPassword
+  //     ) {
+  //       setError("All fields are required.");
+  //       toast.error("All fields are required.");
+  //       return;
+  //     }
+
+  //     if (password !== confirmPassword) {
+  //       setError("Passwords do not match.");
+  //       toast.error("Passwords do not match.");
+  //       return;
+  //     }
+
+  //     try {
+  //       toast.loading("Registering in...");
+  //       const UserTokenData: any = await signUpWithEmailAndPassword(
+  //         email,
+  //         password,
+  //         firstName,
+  //         lastName,
+  //         mobileNumber,
+  //       );
+  //       console.log(UserTokenData);
+
+  //       if (UserTokenData.status === 200) {
+  //         toast.success("Registration Successful!");
+  //         const redirectUrl = getRedirectUrl();
+  //         router.push(redirectUrl);
+  //       } else {
+  //         toast.error(
+  //           UserTokenData.error ||
+  //             "Failed to sign up. Email is already in use.",
+  //         );
+  //         setError(
+  //           UserTokenData.error ||
+  //             "Failed to sign up. Please check your details and try again.",
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error("Sign-up error: ", error);
+  //       toast.error("Failed to sign up. Email is already in use.");
+  //       setError("Failed to sign up. Please check your details and try again.");
+  //     }
+
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleGoogleSignUp = async () => {
     setError("");

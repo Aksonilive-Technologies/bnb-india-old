@@ -5,12 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
+// import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 import DynamicHead from "@/components/DynamicHead";
-import { useAuth } from "@/context/AuthContext";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,12 +23,49 @@ const Login: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "/";
-  const { login } = useAuth();
+  // const { login } = useAuth();
+
+  // const handleLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log("Login form submitted with:", { email, password: "********" });
+
+  //   if (!email || !password) {
+  //     setError("Please fill in all fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsLoading(true);
+  //     setError(null);
+
+  //     console.log("Calling login function from AuthContext");
+  //     const response = await login(email, password);
+  //     console.log("Login response from AuthContext:", response);
+
+  //     if (response.success) {
+  //       toast.success("Logged in successfully!");
+  //       router.push(redirectUrl);
+  //     } else {
+  //       setError(
+  //         response.error || "Login failed. Please check your credentials.",
+  //       );
+  //       toast.error(
+  //         response.error || "Login failed. Please check your credentials.",
+  //       );
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Login error:", error);
+  //     setError(error.message || "An unexpected error occurred");
+  //     toast.error(error.message || "An unexpected error occurred");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login form submitted with:', { email, password: '********' });
-    
+    console.log("Login form submitted with:", { email, password: "********" });
+
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
@@ -37,22 +74,40 @@ const Login: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      console.log('Calling login function from AuthContext');
-      const response = await login(email, password);
-      console.log('Login response from AuthContext:', response);
-      
+
+      toast.loading("Logging in...");
+
+      const res = await fetch(
+        "https://bnbindiabeta.vercel.app/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        },
+      );
+
+      const response = await res.json();
+      toast.dismiss();
+      console.log("Login response:", response);
+
       if (response.success) {
+        // console.log("Login successful:", response.data.token);
         toast.success("Logged in successfully!");
+        localStorage.setItem("access-token", response.data.token);
         router.push(redirectUrl);
       } else {
-        setError(response.error || "Login failed. Please check your credentials.");
-        toast.error(response.error || "Login failed. Please check your credentials.");
+        const errorMsg =
+          response.error || "Login failed. Please check your credentials.";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error: any) {
       console.error("Login error:", error);
-      setError(error.message || "An unexpected error occurred");
-      toast.error(error.message || "An unexpected error occurred");
+      const fallback = error?.message || "An unexpected error occurred";
+      setError(fallback);
+      toast.error(fallback);
     } finally {
       setIsLoading(false);
     }
@@ -62,9 +117,11 @@ const Login: React.FC = () => {
     try {
       setIsGoogleLoading(true);
       setError(null);
-      
+
       // Google sign-in will be implemented in a future update
-      toast.error("Google Sign In is temporarily unavailable. Please use email/password login.");
+      toast.error(
+        "Google Sign In is temporarily unavailable. Please use email/password login.",
+      );
     } catch (error: any) {
       console.error("Google sign-in error:", error);
       setError(error.message || "An unexpected error occurred");
@@ -104,7 +161,7 @@ const Login: React.FC = () => {
         </p>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        
+
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label
@@ -123,7 +180,7 @@ const Login: React.FC = () => {
               required
             />
           </div>
-          
+
           <div>
             <label
               htmlFor="password"
@@ -150,7 +207,7 @@ const Login: React.FC = () => {
               </button>
             </div>
           </div>
-          
+
           <div>
             <button
               type="submit"
@@ -187,14 +244,16 @@ const Login: React.FC = () => {
             </button>
           </div>
         </form>
-        
+
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with
+              </span>
             </div>
           </div>
 
@@ -237,7 +296,7 @@ const Login: React.FC = () => {
             </button>
           </div>
         </div>
-        
+
         <div className="flex justify-between mt-6 text-sm">
           <Link
             href="/forgot-password"
@@ -245,10 +304,7 @@ const Login: React.FC = () => {
           >
             Forgot Password?
           </Link>
-          <Link
-            href="/register"
-            className="text-pink-600 hover:text-pink-900"
-          >
+          <Link href="/register" className="text-pink-600 hover:text-pink-900">
             Create Account
           </Link>
         </div>
